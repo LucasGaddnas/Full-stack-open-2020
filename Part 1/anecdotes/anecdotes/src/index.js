@@ -4,7 +4,8 @@ import ReactDOM from 'react-dom'
 const App = (props) => {
   const [selected, setSelected] = useState(0)
   const [points, setPoints] = useState(Array.apply(null, new Array(anecdotes.length)).map(Number.prototype.valueOf,0))
-  const copy = [...points]
+  const [highest, setHighest] = useState(0)
+  const [indexOfHighest, setIndexOfHighest] = useState(0)
 
   const randomAnecdote = () => {
     setSelected(Math.floor(Math.random() * anecdotes.length))
@@ -13,14 +14,24 @@ const App = (props) => {
     const copy = [...points]
     copy[selected] += 1
     setPoints(copy)
+    copy.forEach((value, index) => {
+      if (value > highest) {
+        setHighest(value)
+        setIndexOfHighest(index)
+      }
+    })
   }
 
   return (
     <div>
+      <h1>Current anecdote</h1>
       {props.anecdotes[selected]}
-      <p>has {copy[selected]} votes</p>
+      <p>has {points[selected]} votes</p>
       <button onClick={vote}>Vote</button>
       <button onClick={randomAnecdote}>Next anecdote</button>
+      <h1>Anecdote with most votes</h1>
+      {props.anecdotes[indexOfHighest]}
+      <p>has {highest} votes</p>
     </div>
   )
 }
