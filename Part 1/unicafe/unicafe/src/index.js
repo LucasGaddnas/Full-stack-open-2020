@@ -14,16 +14,18 @@ const Button = ({handle, text}) => {
 const Statistic = ({text, value, unit}) => {
   if (unit === "") {
     return (
-      <>
-        <p>{text}: {value}</p>
-      </>
+      <tr>
+        <td>{text}:</td>
+        <td>{value}</td>
+      </tr>
     )
   }
   else {
     return (
-      <>
-        <p>{text}: {value} {unit}</p>
-      </>
+      <tr>
+        <td>{text}:</td>
+        <td>{value} {unit}</td>
+      </tr>
     )
   }
 }
@@ -38,15 +40,19 @@ const Statistics = ({good, neutral, bad, all, average, positive}) => {
   }
   else {
     return (
-      <div>
+      <>
         <h1>Statistics</h1>
-        <Statistic text="Good" value={good}/>
-        <Statistic text="Neutral" value={neutral}/>
-        <Statistic text="Bad" value={bad}/>
-        <Statistic text="All" value={all}/>
-        <Statistic text="Average" value={average}/>
-        <Statistic text="Positive" value={positive} unit="%"/>
-      </div>
+        <table>
+          <tbody>
+            <Statistic text="Good" value={good}/>
+            <Statistic text="Neutral" value={neutral}/>
+            <Statistic text="Bad" value={bad}/>
+            <Statistic text="All" value={all}/>
+            <Statistic text="Average" value={average}/>
+            <Statistic text="Positive" value={positive} unit="%"/>
+          </tbody>
+        </table>
+      </>
     )
   }
 }
