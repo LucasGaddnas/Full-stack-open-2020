@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import Service from './services/service'
 import Persons from './components/persons'
 import Form from './components/form'
 import Filter from './components/filter'
@@ -11,27 +11,33 @@ const App = () => {
     const [ filter, setFilter ] = useState('')
 
     const hook = () => {
-        axios.get('http://localhost:3001/persons')
-        .then(response => {setPersons(response.data)})
+        Service.getAll()
+        .then(response => {setPersons(response)})
     }
     useEffect(hook, [])
 
     const addName = (event) => {
         event.preventDefault()
+        let add = true
         persons.forEach((person) => {
             if (person.name === newName) {
                 alert(`${newName} is already added to phonebook`)
+                add = false
             }
             else if (person.name === '' || person.number === '') {
                 alert('Fill all inputfields')
-            }
-            else {
-                const person = { name: newName, number: newNumber }
-                setPersons(persons.concat(person))
-                setNewName('')
-                setNewNumber('')
+                add = false
             }
         })
+        if (add) {
+            const person = { name: newName, number: newNumber }
+            Service.add(person)
+            .then(response => {
+                setPersons(persons.concat(response))
+                setNewName('')
+                setNewNumber('')
+            })
+        }
     }
     const handleNameChange = (event) => setNewName(event.target.value)
     const handleNumberChange = (event) => setNewNumber(event.target.value)
