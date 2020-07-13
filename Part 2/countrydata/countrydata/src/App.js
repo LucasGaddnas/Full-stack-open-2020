@@ -12,8 +12,26 @@ const InputForm = ({country, inputChange}) => {
     )
 }
 
-const Result = ({searchCountry, countries}) => {
-    const countriesToShow = countries.filter(country => country.name.toLowerCase().includes(searchCountry.toLowerCase()))
+const Display = ({country}) => {
+    return (
+        <div>
+            <h1>{country.name}</h1>
+            <div>Capital: {country.capital}</div>
+            <div>Population: {country.population}</div>
+            <h2>Languages</h2>
+            <ul>
+                {country.languages.map(language =>
+                    <li key={language.name}>{language.name}</li>
+                )}
+            </ul>
+            <img src={country.flag} alt="Could not display"></img>
+        </div>
+    )
+}
+
+const Result = ({searchCountry, countries, handleButtonClick, setSelectedCountry}) => {
+    console.log(searchCountry, "Result")
+    const countriesToShow = countries.filter(country => country.name.toLowerCase().includes(searchCountry))
 
     if (countriesToShow.length > 10) {
         return (
@@ -24,25 +42,17 @@ const Result = ({searchCountry, countries}) => {
     }
     else if (countriesToShow.length === 1) {
         return (
-            <div>
-                <h1>{countriesToShow[0].name}</h1>
-                <div>Capital: {countriesToShow[0].capital}</div>
-                <div>Population: {countriesToShow[0].population}</div>
-                <h2>Languages</h2>
-                <ul>
-                    {countriesToShow[0].languages.map(language =>
-                        <li key={language.name}>{language.name}</li>
-                    )}
-                </ul>
-                <img src={countriesToShow[0].flag} alt="Could not display"></img>
-            </div>
+            <Display country={countriesToShow[0]}/>
         )
     }
     else {
         return (
             <div>
                 {countriesToShow.map(country =>
-                    <div key={country.name}>{country.name}</div>
+                    <form key={country.population} value={country.name} onSubmit={handleButtonClick}>
+                        {country.name}
+                        <button key={country.name} onClick={setSelectedCountry(country.name)} type="submit">show</button>
+                    </form>
                 )}
             </div>
         )
@@ -52,6 +62,7 @@ const Result = ({searchCountry, countries}) => {
 const App = () => {
     const [searchCountry, setSearchCountry] = useState('')
     const [countries, setCountries] = useState([])
+    const [selectedCountry, setSelectedCountry] = useState('')
 
     const hook = () => {
         axios.get('https://restcountries.eu/rest/v2/all')
@@ -61,11 +72,18 @@ const App = () => {
     useEffect(hook, [])
 
     const handleInputChange = (event) => setSearchCountry(event.target.value)
+    const handleButtonClick = (event) => {
+        event.preventDefault()
+        //setSearchCountry(event.target)
+        console.log(event.target.value, "country")
+        console.log(selectedCountry, "selected country")
+        console.log("Test")   
+    }
 
     return (
         <div>
             <InputForm searchCountry={searchCountry} inputChange={handleInputChange}/>
-            <Result searchCountry={searchCountry} countries={countries}/>
+            <Result searchCountry={searchCountry.toLowerCase()} countries={countries} handleButtonClick={handleButtonClick} setSelectedCountry={setSelectedCountry}/>
         </div>
     )
 }
